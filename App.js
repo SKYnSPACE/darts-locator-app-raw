@@ -7,6 +7,8 @@ import HomeScreen from './src/screens/HomeScreen'
 import LocatorScreen from './src/screens/LocatorScreen'
 import FireScreen from './src/screens/FireScreen'
 
+import ManualConnection from './src/screens/SerialTester'
+
 function DetailsScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -30,6 +32,7 @@ function App() {
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="Locator" component={LocatorScreen} />
         <Stack.Screen name="Fire" component={FireScreen} />
+        <Stack.Screen name="Serial" component={ManualConnection} />
       </Stack.Navigator>
     </NavigationContainer>
   );

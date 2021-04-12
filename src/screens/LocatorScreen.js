@@ -46,6 +46,7 @@ function LocatorScreen({ navigation }) {
                 color: "white",
                 borderBottomWidth: 1,
                 borderColor: "white",
+                padding: 0
               }}
               onChangeText={(lat) => setLat(lat)}
               defaultValue={lat}
@@ -61,10 +62,12 @@ function LocatorScreen({ navigation }) {
                 color: "white",
                 borderBottomWidth: 1,
                 borderColor: "white",
+                padding: 0
               }}
               onChangeText={(latFine) => setLatFine(latFine)}
               defaultValue={latFine}
               keyboardType="number-pad"
+              textAlign={"left"}
               maxLength={7}
             />
           </View>
@@ -83,6 +86,7 @@ function LocatorScreen({ navigation }) {
                 color: "white",
                 borderBottomWidth: 1,
                 borderColor: "white",
+                padding: 0
               }}
               onChangeText={(lon) => setLon(lon)}
               defaultValue={lon}
@@ -98,10 +102,12 @@ function LocatorScreen({ navigation }) {
                 color: "white",
                 borderBottomWidth: 1,
                 borderColor: "white",
+                padding: 0
               }}
               onChangeText={(lonFine) => setLonFine(lonFine)}
               defaultValue={lonFine}
               keyboardType="number-pad"
+              textAlign={"left"}
               maxLength={7}
             />
           </View>
@@ -151,6 +157,7 @@ function LocatorScreen({ navigation }) {
                 color: "white",
                 borderBottomWidth: 1,
                 borderColor: "white",
+                paddingVertical: 0
               }}
               onChangeText={(gzd) => setGzd(gzd)}
               defaultValue={gzd}
@@ -172,6 +179,7 @@ function LocatorScreen({ navigation }) {
                 color: "white",
                 borderBottomWidth: 1,
                 borderColor: "white",
+                paddingVertical: 0
               }}
               onChangeText={(gsid) => setGsid(gsid)}
               defaultValue={gsid}
@@ -192,6 +200,7 @@ function LocatorScreen({ navigation }) {
                 color: "white",
                 borderBottomWidth: 1,
                 borderColor: "white",
+                paddingVertical: 0
               }}
               onChangeText={(easting) => setEasting(easting)}
               defaultValue={easting}
@@ -215,6 +224,7 @@ function LocatorScreen({ navigation }) {
                 color: "white",
                 borderBottomWidth: 1,
                 borderColor: "white",
+                paddingVertical: 0
               }}
               onChangeText={(northing) => setNorthing(northing)}
               defaultValue={northing}
