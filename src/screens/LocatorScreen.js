@@ -119,7 +119,7 @@ function LocatorScreen({ navigation }) {
       <View style={styles.converterButtonBox}>
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => navigation.navigate("Status")}
+          onPress={() => navigation.navigate("SerialTester")}
           style={styles.converterButton}
         >
           <MaterialCommunityIcons

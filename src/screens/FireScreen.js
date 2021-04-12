@@ -33,7 +33,7 @@ function FireScreen({ navigation }) {
       <View style={styles.buttonBox}>
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => navigation.navigate("Serial")}
+          onPress={() => navigation.navigate("Status")}
           style={styles.fireButtonStyle}
         >
           <MaterialCommunityIcons name="upload" style={styles.fireFontStyle} />

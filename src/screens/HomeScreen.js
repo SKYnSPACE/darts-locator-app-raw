@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { View, Text, Button, Image, FlatList, StyleSheet } from "react-native";
 
 import Drone from '../components/Drone';
+import ManualConnection from './SerialTester'
 
 const HomeScreen = ({navigation}) => {
 
@@ -19,8 +20,9 @@ const HomeScreen = ({navigation}) => {
       <Drone state={drone2} navigation={navigation}/>
       <Drone state={drone3} navigation={navigation}/>
       <Drone state={drone4} navigation={navigation}/>
+      <ManualConnection/>
 
-      <Image source={require('../../assets/darts.png')} style={styles.logoStyle}/>
+      {/* <Image source={require('../../assets/darts.png')} style={styles.logoStyle}/> */}
 
     </View>
     );

@@ -9,18 +9,6 @@ import FireScreen from './src/screens/FireScreen'
 
 import ManualConnection from './src/screens/SerialTester'
 
-function DetailsScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>네에에에 :)</Text>
-      <Button
-        title="돌아가기"
-        onPress={() => navigation.navigate('Status')}
-      />
-    </View>
-  );
-}
-
 const Stack = createStackNavigator();
 
 function App() {
@@ -29,10 +17,9 @@ function App() {
     <NavigationContainer theme={DarkTheme}>
       <Stack.Navigator initialRouteName="Status">
         <Stack.Screen name="Status" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="Locator" component={LocatorScreen} />
         <Stack.Screen name="Fire" component={FireScreen} />
-        <Stack.Screen name="Serial" component={ManualConnection} />
+        <Stack.Screen name="SerialTester" component={ManualConnection} />
       </Stack.Navigator>
     </NavigationContainer>
   );
