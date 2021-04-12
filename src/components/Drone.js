@@ -6,16 +6,12 @@ const COLOR_GREEN = '#4cd137';
 const COLOR_DARK = '#1e272e';
 const BORDER_COLOR = '#7f8fa6';
 
-function _onPressButton() {
-    alert('You tapped the button!')
-  }
 
-
-const Drone = ({state, navigation}) => {
+const Drone = ({state, setter, navigation}) => {
     const {id, homePos, targetPos, batt, gpsErr, targetErr, distErr} = state
 
   return (<View style={styles.containerStyle}>
-      <TouchableOpacity underlayColor="white" onPress={()=>navigation.navigate('Locator')} style={styles.iconBoxStyle}>
+      <TouchableOpacity underlayColor="white" onPress={()=>navigation.navigate('Locator', {state:state, setter:setter})} style={styles.iconBoxStyle}>
       {/* <View style={styles.iconBoxStyle}> */}
         <MaterialCommunityIcons name="quadcopter" style={styles.headerIconStyle} /> 
         <Text style={styles.headerFontStyle}> {id}</Text>

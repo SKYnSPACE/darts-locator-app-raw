@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import Mgrs, { LatLon } from '../geodesy/mgrs';
+
 const BORDER_COLOR = "#7f8fa6";
 
 const DismissKeyboard = ({ children }) => (
@@ -18,7 +20,72 @@ const DismissKeyboard = ({ children }) => (
     </TouchableWithoutFeedback>
   );
 
-function LocatorScreen({ navigation }) {
+const onPressLatLon2MGRS = ({lat, latFine, lon, lonFine, setGzd, setGsid, setEasting, setNorthing}) => {
+  try{
+    const p = LatLon.parse(lat.concat('.',latFine,', ',lon,'.',lonFine));
+    // console.log(p)
+    const {zone, band, e100k, n100k, easting, northing} = p.toUtm().toMgrs()
+    // console.log(zone, band, e100k, n100k, Math.round(easting), Math.round(northing))
+    setGzd(zone.toString().concat(band));
+    setGsid(e100k.concat(n100k));
+    setEasting(Math.round(easting).toString().padStart(5,'0'));
+    setNorthing(Math.round(northing).toString().padStart(5,'0'));
+  } catch (e){
+    alert('Wrong Lat/Lon Coordinates.');
+  }
+}
+
+const onPressMGRS2LatLon = ({gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine}) => {
+  try{
+    const mgrs = Mgrs.parse(gzd.concat(' ', gsid, ' ', easting, ' ', northing));
+    const latlon = mgrs.toUtm().toLatLon()
+    // console.log(latlon._lat, latlon._lon)
+    
+    const [lat,latFine] = latlon._lat.toString().split('.')
+    const [lon,lonFine] = latlon._lon.toString().split('.')
+    
+    setLat(lat);
+    setLatFine(latFine);
+    setLon(lon);
+    setLonFine(lonFine);
+
+  } catch (e){
+    alert('Wrong MGRS Coordinates.');
+  }
+}
+
+const onPressLoad = ({targetMgrs, setLat, setLatFine, setLon, setLonFine, setGzd, setGsid, setEasting, setNorthing}) => {
+  try{
+    
+    // console.log(route.params?.state.targetPos)
+    const mgrs = Mgrs.parse(targetMgrs);
+    const [gzd, gsid, easting, northing] = targetMgrs.split(' ')
+
+    // const latlon = mgrs.toUtm().toLatLon()
+    
+    // const [lat,latFine] = latlon._lat.toString().split('.')
+    // const [lon,lonFine] = latlon._lon.toString().split('.')
+
+    // setLat(lat);
+    // setLatFine(latFine);
+    // setLon(lon);
+    // setLonFine(lonFine);
+
+    setGzd(gzd);
+    setGsid(gsid);
+    setEasting(easting);
+    setNorthing(northing);
+
+  } catch (e){
+    alert ('Nothing to Load.')
+  }
+}
+
+function LocatorScreen({ navigation, route }) {
+  // console.log(route.params?.state)
+  const targetMgrs = route.params?.state.targetPos;
+  // console.log(route.params?.state.targetPos)
+
   const [lat, setLat] = useState("");
   const [latFine, setLatFine] = useState("");
   const [lon, setLon] = useState("");
@@ -32,7 +99,7 @@ function LocatorScreen({ navigation }) {
     <View style={styles.containerStyle}>
       <View style={styles.latLonBox}>
         <View style={styles.titleBox}>
-          <Text style={styles.latLonTitle}>Latitude / Longitude</Text>
+          <Text style={styles.latLonTitle}>Target #{route.params?.state.id}: Latitude / Longitude</Text>
         </View>
         <DismissKeyboard>
         <View style={styles.latBox}>
@@ -52,7 +119,7 @@ function LocatorScreen({ navigation }) {
               defaultValue={lat}
               keyboardType="number-pad"
               textAlign={"right"}
-              maxLength={2}
+              maxLength={3}
             /> 
             <Text style={styles.subTitle}>.</Text>
             <TextInput
@@ -92,7 +159,7 @@ function LocatorScreen({ navigation }) {
               defaultValue={lon}
               keyboardType="number-pad"
               textAlign={"right"}
-              maxLength={3}
+              maxLength={4}
             />
             <Text style={styles.subTitle}>.</Text>
             <TextInput
@@ -119,7 +186,7 @@ function LocatorScreen({ navigation }) {
       <View style={styles.converterButtonBox}>
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => navigation.navigate("SerialTester")}
+          onPress={() => onPressLatLon2MGRS({lat,latFine,lon,lonFine, setGzd, setGsid, setEasting, setNorthing})}
           style={styles.converterButton}
         >
           <MaterialCommunityIcons
@@ -127,9 +194,21 @@ function LocatorScreen({ navigation }) {
             style={styles.buttonFontStyle}
           />
         </TouchableOpacity>
+
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => navigation.navigate("Status")}
+          onPress={() => onPressLoad({targetMgrs,setLat, setLatFine, setLon, setLonFine, setGzd, setGsid, setEasting, setNorthing})}
+          style={styles.converterButton}
+        >
+          <MaterialCommunityIcons
+            name="file-download"
+            style={styles.buttonFontStyle}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          underlayColor="white"
+          onPress={() => onPressMGRS2LatLon({gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine})}
           style={styles.converterButton}
         >
           <MaterialCommunityIcons
@@ -137,12 +216,13 @@ function LocatorScreen({ navigation }) {
             style={styles.buttonFontStyle}
           />
         </TouchableOpacity>
+
       </View>
 
       <View style={styles.mgrsBox}>
       <DismissKeyboard>
         <View style={styles.titleBox}>
-          <Text style={styles.latLonTitle}>MGRS</Text>
+          <Text style={styles.latLonTitle}>Target #{route.params?.state.id}: MGRS</Text>
         </View>
         </DismissKeyboard>
 
@@ -152,7 +232,7 @@ function LocatorScreen({ navigation }) {
           <View style={styles.mgrsInputs}>
             <TextInput
               style={{
-                width: 30,
+                width: 35,
                 height: 25,
                 color: "white",
                 borderBottomWidth: 1,
@@ -162,7 +242,7 @@ function LocatorScreen({ navigation }) {
               onChangeText={(gzd) => setGzd(gzd)}
               defaultValue={gzd}
               textAlign={"center"}
-              maxLength={2}
+              maxLength={3}
             />
           </View>
         </View>
@@ -242,7 +322,8 @@ function LocatorScreen({ navigation }) {
       <View style={styles.confirmButtonBox}>
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => navigation.navigate("Status")}
+          onPress={() => {route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing)})
+        navigation.navigate("Status")}}
           style={styles.confirmButton}
         >
           <MaterialCommunityIcons
