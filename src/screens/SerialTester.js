@@ -11,9 +11,42 @@ import {
 } from "react-native";
 import { RNSerialport, definitions, actions } from "react-native-serialport";
 //type Props = {};
+
+const ParseDroneStatByte = (byte, drone1, drone2, drone3, drone4, setDrone1, setDrone2, setDrone3, setDrone4) => {
+  const droneId = (byte >> 6);
+
+  switch (droneId) {
+    case 0:
+      setDrone1({...drone1, distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1))});
+      break;
+    case 1:
+      setDrone2({...drone2, distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1))});
+      break;
+    case 2:
+      setDrone3({...drone3, distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1))});
+      break;
+    case 3:
+      setDrone4({...drone4, distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1))});
+      break;
+    default:
+      null;
+  }
+  
+};
+
 class ManualConnection extends Component {
   constructor(props) {
     super(props);
+
+    this.drone1 = props.states.drone1;
+    this.drone2 = props.states.drone2;
+    this.drone3 = props.states.drone3;
+    this.drone4 = props.states.drone4;
+
+    this.setDrone1 = props.setters.setDrone1;
+    this.setDrone2 = props.setters.setDrone2;
+    this.setDrone3 = props.setters.setDrone3;
+    this.setDrone4 = props.setters.setDrone4;
 
     this.state = {
       servisStarted: false,
@@ -129,19 +162,9 @@ class ManualConnection extends Component {
   }
 
   handleConvertButton() {
-    let data = "";
-    if (
-      this.state.returnedDataType === definitions.RETURNED_DATA_TYPES.HEXSTRING
-    ) {
-      data = RNSerialport.hexToUtf16(this.state.output);
-    } else if (
-      this.state.returnedDataType === definitions.RETURNED_DATA_TYPES.INTARRAY
-    ) {
-      data = RNSerialport.intArrayToUtf16(this.state.outputArray);
-    } else {
-      return;
-    }
-    this.setState({ output: data });
+    // let byte = 0b00011111;
+    let byte = Math.round(255*Math.random());
+    ParseDroneStatByte(byte, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
   }
    handleSendButton() {
      RNSerialport.writeString(this.state.sendText);

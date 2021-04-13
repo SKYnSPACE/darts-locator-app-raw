@@ -6,9 +6,8 @@ const COLOR_GREEN = '#4cd137';
 const COLOR_DARK = '#1e272e';
 const BORDER_COLOR = '#7f8fa6';
 
-
 const Drone = ({state, setter, navigation}) => {
-    const {id, homePos, targetPos, batt, gpsErr, targetErr, distErr} = state
+    const {id, homePos, targetPos, isFired, battStat, imuStat, gpsStat, targetingStat, distStat} = state
 
   return (<View style={styles.containerStyle}>
       <TouchableOpacity underlayColor="white" onPress={()=>navigation.navigate('Locator', {state:state, setter:setter})} style={styles.iconBoxStyle}>
@@ -28,18 +27,20 @@ const Drone = ({state, setter, navigation}) => {
           </View>
           <View style={styles.warningBoxesStyle}>
               <View style={styles.batteryWaningBoxStyle}>
-                  {batt > 69 ? <MaterialCommunityIcons name="battery-high" style={styles.iconStyleGood} /> : (batt > 33 ? <MaterialCommunityIcons name="battery-medium" style={styles.iconStyleWarning} /> : <MaterialCommunityIcons name="battery-low" style={styles.iconStyleDanger} />)}
-                  {batt > 69 ? <Text style={styles.textStyleGood}>{batt}%</Text> : (batt > 33 ? <Text style={styles.textStyleWarning}>{batt}%</Text> : <Text style={styles.textStyleDanger}>{batt}%</Text>)}
+                {battStat? <MaterialCommunityIcons name="battery-low" style={styles.iconStyleDark} /> : <MaterialCommunityIcons name="battery-low" style={styles.iconStyleDanger} />}
+              </View>
+              <View style={styles.imuWaningBoxStyle}>
+                {imuStat? <MaterialCommunityIcons name="compass-off-outline" style={styles.iconStyleDark} /> : <MaterialCommunityIcons name="compass-off-outline" style={styles.iconStyleDanger} />}
               </View>
               <View style={styles.gpsWaningBoxStyle}>
-                {gpsErr? <MaterialCommunityIcons name="map-marker-off" style={styles.iconStyleDanger} /> : <MaterialCommunityIcons name="map-marker-off" style={styles.iconStyleDark} />}
+                {gpsStat? <MaterialCommunityIcons name="map-marker-off" style={styles.iconStyleDark} /> : <MaterialCommunityIcons name="map-marker-off" style={styles.iconStyleDanger} />}
               </View>
               <View style={styles.targetWaningBoxStyle}>
-                {targetErr? <MaterialCommunityIcons name="crosshairs-question" style={styles.iconStyleDanger} /> : <MaterialCommunityIcons name="crosshairs-question" style={styles.iconStyleDark} />}
+                {targetingStat? <MaterialCommunityIcons name="crosshairs-question" style={styles.iconStyleDark} /> : <MaterialCommunityIcons name="crosshairs-question" style={styles.iconStyleDanger} />}
                 
               </View>
               <View style={styles.distWaningBoxStyle}>
-                {distErr? <MaterialCommunityIcons name="arrow-expand" style={styles.iconStyleDanger} /> : <MaterialCommunityIcons name="arrow-expand" style={styles.iconStyleDark} />}
+                {distStat? <MaterialCommunityIcons name="arrow-expand" style={styles.iconStyleDark} /> : <MaterialCommunityIcons name="arrow-expand" style={styles.iconStyleDanger} />}
                 
               </View>
               <TouchableOpacity underlayColor="white" onPress={()=>navigation.navigate('Fire')} style={styles.fireBoxStyle}>
@@ -173,7 +174,15 @@ const styles = StyleSheet.create({
   },
 
   batteryWaningBoxStyle:{
-    flex: 2,
+    flex: 1,
+
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    
+  },
+  imuWaningBoxStyle:{
+    flex: 1,
 
     alignItems: 'center',
     justifyContent: 'center',

@@ -20,6 +20,53 @@ const DismissKeyboard = ({ children }) => (
     </TouchableWithoutFeedback>
   );
 
+
+let _appendBuffer = function(buffer1, buffer2) {
+  let tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+  tmp.set(new Uint8Array(buffer1), 0);
+  tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
+  return tmp.buffer;
+};
+
+const IntToUint8 = function(intVal) {
+  return [(intVal >> 24) & (255),
+    (intVal >> 16) & (255),
+    (intVal >> 8) & (255),
+    (intVal) & (255)];
+};
+
+function ToHexString(byteArray) {
+  return Array.from(byteArray, function(byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  }).join('')
+}
+
+function CreateChecksum(data){
+  let checksum = 0;
+  data.forEach(element => {checksum += element});
+  
+  return checksum%256;
+}
+
+const PackTargetInfo = (droneId, lat, latFine, lon, lonFine) => {
+  let buffer = new Uint8Array(25);
+
+  buffer[0] = 255;
+  buffer[1] = 250;
+  
+  buffer[2] = (droneId-1) << 6;
+  buffer.set(IntToUint8(lat),3);
+  buffer.set(IntToUint8(latFine.slice(0,6)),7);
+  buffer.set(IntToUint8(lon),11);
+  buffer.set(IntToUint8(lonFine.slice(0,6)),15);
+  buffer.set([0, 0, 0, 0], 19);
+  
+  buffer[23] = CreateChecksum(buffer.slice(2, 23));
+  buffer[24] = 221;
+
+  // console.log(ToHexString(buffer))
+}
+  
 const onPressLatLon2MGRS = ({lat, latFine, lon, lonFine, setGzd, setGsid, setEasting, setNorthing}) => {
   try{
     const p = LatLon.parse(lat.concat('.',latFine,', ',lon,'.',lonFine));
@@ -35,7 +82,7 @@ const onPressLatLon2MGRS = ({lat, latFine, lon, lonFine, setGzd, setGsid, setEas
   }
 }
 
-const onPressMGRS2LatLon = ({gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine}) => {
+const onPressMGRS2LatLon = ({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine}) => {
   try{
     const mgrs = Mgrs.parse(gzd.concat(' ', gsid, ' ', easting, ' ', northing));
     const latlon = mgrs.toUtm().toLatLon()
@@ -48,6 +95,8 @@ const onPressMGRS2LatLon = ({gzd, gsid, easting, northing, setLat, setLatFine, s
     setLatFine(latFine);
     setLon(lon);
     setLonFine(lonFine);
+
+    PackTargetInfo(droneId, lat, latFine, lon, lonFine);
 
   } catch (e){
     alert('Wrong MGRS Coordinates.');
@@ -81,9 +130,11 @@ const onPressLoad = ({targetMgrs, setLat, setLatFine, setLon, setLonFine, setGzd
   }
 }
 
+
 function LocatorScreen({ navigation, route }) {
   // console.log(route.params?.state)
   const targetMgrs = route.params?.state.targetPos;
+  const droneId = route.params?.state.id;
   // console.log(route.params?.state.targetPos)
 
   const [lat, setLat] = useState("");
@@ -99,7 +150,7 @@ function LocatorScreen({ navigation, route }) {
     <View style={styles.containerStyle}>
       <View style={styles.latLonBox}>
         <View style={styles.titleBox}>
-          <Text style={styles.latLonTitle}>Target #{route.params?.state.id}: Latitude / Longitude</Text>
+          <Text style={styles.latLonTitle}>Target #{droneId}: Latitude / Longitude</Text>
         </View>
         <DismissKeyboard>
         <View style={styles.latBox}>
@@ -135,7 +186,7 @@ function LocatorScreen({ navigation, route }) {
               defaultValue={latFine}
               keyboardType="number-pad"
               textAlign={"left"}
-              maxLength={7}
+              maxLength={6}
             />
           </View>
         </View>
@@ -175,7 +226,7 @@ function LocatorScreen({ navigation, route }) {
               defaultValue={lonFine}
               keyboardType="number-pad"
               textAlign={"left"}
-              maxLength={7}
+              maxLength={6}
             />
           </View>
         </View>
@@ -208,7 +259,7 @@ function LocatorScreen({ navigation, route }) {
 
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => onPressMGRS2LatLon({gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine})}
+          onPress={() => onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine})}
           style={styles.converterButton}
         >
           <MaterialCommunityIcons
@@ -222,7 +273,7 @@ function LocatorScreen({ navigation, route }) {
       <View style={styles.mgrsBox}>
       <DismissKeyboard>
         <View style={styles.titleBox}>
-          <Text style={styles.latLonTitle}>Target #{route.params?.state.id}: MGRS</Text>
+          <Text style={styles.latLonTitle}>Target #{droneId}: MGRS</Text>
         </View>
         </DismissKeyboard>
 
@@ -322,8 +373,21 @@ function LocatorScreen({ navigation, route }) {
       <View style={styles.confirmButtonBox}>
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => {route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing)})
-        navigation.navigate("Status")}}
+          onPress={() => {
+            try{
+              onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine}); //getLatLonInfo();
+
+              
+              //sendTargetInfo(); <-- do this on homescreen. use setinterval with 10Hz 
+
+              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing)})
+            } catch(e){
+              
+            } finally{
+              navigation.navigate("Status")
+            }
+            
+          }}
           style={styles.confirmButton}
         >
           <MaterialCommunityIcons

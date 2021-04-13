@@ -17,6 +17,27 @@ const timerProps = {
   strokeWidth: 3,
 };
 
+function ToHexString(byteArray) {
+  return Array.from(byteArray, function(byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  }).join('')
+}
+
+const PackFireSignal = (droneId) => {
+  let buffer = new Uint8Array(7);
+
+  buffer[0] = 255;
+  buffer[1] = 251;
+  
+  buffer[2] = (droneId-1) << 6;
+  buffer[3] = 253;
+  buffer[4] = 254;
+  buffer[5] = 255;
+  buffer[6] = 221;
+  
+  // console.log(ToHexString(buffer))
+}
+
 function SuspendedMessage() {
   alert("Fire suspended due to timeout.");
 }
