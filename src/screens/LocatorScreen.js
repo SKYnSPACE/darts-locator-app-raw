@@ -290,6 +290,8 @@ function LocatorScreen({ navigation, route }) {
                 borderColor: "white",
                 paddingVertical: 0
               }}
+              autoCapitalize="characters"
+              autoFocus = {true}
               onChangeText={(gzd) => setGzd(gzd)}
               defaultValue={gzd}
               textAlign={"center"}
@@ -312,6 +314,7 @@ function LocatorScreen({ navigation, route }) {
                 borderColor: "white",
                 paddingVertical: 0
               }}
+              autoCapitalize="characters"
               onChangeText={(gsid) => setGsid(gsid)}
               defaultValue={gsid}
               textAlign={"center"}
