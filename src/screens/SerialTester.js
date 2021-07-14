@@ -168,6 +168,7 @@ class ManualConnection extends Component {
   }
    handleSendButton() {
      RNSerialport.writeString(this.state.sendText);
+    //  RNSerialport.writeHexString("48454C4C4F"); // 5 byte
    }
   handleClearButton() {
     this.setState({ output: "" });
