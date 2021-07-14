@@ -34,6 +34,7 @@ const ParseDroneStatByte = (byte, drone1, drone2, drone3, drone4, setDrone1, set
   
 };
 
+
 class ManualConnection extends Component {
   constructor(props) {
     super(props);
@@ -42,6 +43,8 @@ class ManualConnection extends Component {
     this.drone2 = props.states.drone2;
     this.drone3 = props.states.drone3;
     this.drone4 = props.states.drone4;
+
+    this.myRef = React.createRef(this.drone1);
 
     this.setDrone1 = props.setters.setDrone1;
     this.setDrone2 = props.setters.setDrone2;
@@ -63,9 +66,70 @@ class ManualConnection extends Component {
     this.startUsbListener = this.startUsbListener.bind(this);
     this.stopUsbListener = this.stopUsbListener.bind(this);
   }
+  componentWillReceiveProps(nextProps) {
+    this.drone1 = nextProps.states.drone1;
+    this.drone2 = nextProps.states.drone2;
+    this.drone3 = nextProps.states.drone3;
+    this.drone4 = nextProps.states.drone4;
+  }
+
+  GenerateRandomDroneStat()
+  {
+    if (this.drone1.sendTargetMsg == 1)
+    {
+      let byte = Math.round(255*Math.random());
+      ParseDroneStatByte(byte, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
+      this.setDrone1({...this.drone1, sendTargetMsg:0});
+      // setTimeout(() => { this.setDrone1({...this.drone1, sendTargetMsg:0}); }, 5000);
+    }
+    
+  }
 
   componentDidMount() {
     this.startUsbListener();
+    // setInterval(() => {
+    //   let byte = Math.round(255*Math.random());
+    //   ParseDroneStatByte(byte, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
+    //   console.log(this.drone2.battStat, this.drone2.imuStat, this.drone2.distStat)
+    // }, 2000);
+
+    setInterval(() => {
+      // RNSerialport.writeHexString("48454C4C4F");
+      this.GenerateRandomDroneStat();
+      // this.setDrone1({...this.drone1, sendTargetMsg:0});
+      // setTimeout(() => {GenerateRandomDroneStat}, 1000);
+      // setTimeout(() => {GenerateRandomDroneStat}, 2000);
+      // setTimeout(() => {GenerateRandomDroneStat}, 3000);
+      // setTimeout(() => {GenerateRandomDroneStat}, 4000);
+      // setTimeout(() => {GenerateRandomDroneStat}, 5000);
+      
+      // RNSerialport.writeHexString("48454C4C4F");
+    }, 2000);
+  }
+
+  componentDidUpdate() {  
+    // const {battStat} = this.drone1;
+    // const {battStat2} = this.myRef;
+    // console.log(battStat, battStat2);
+    // if (this.drone1.battStat == 1)
+    // {
+    //   let byte = Math.round(255*Math.random());
+    //   ParseDroneStatByte(byte, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
+    //   this.setDrone1({...this.drone1, battStat:0});
+    //   // setTimeout(() => { this.setDrone1({...this.drone1, sendTargetMsg:0}); }, 2000);
+    // }
+    // setTimeout(() => {
+    //   // RNSerialport.writeHexString("48454C4C4F");
+    //   this.GenerateRandomDroneStat();
+    //   // this.setDrone1({...this.drone1, sendTargetMsg:0});
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 1000);
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 2000);
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 3000);
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 4000);
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 5000);
+      
+    //   // RNSerialport.writeHexString("48454C4C4F");
+    // }, 2000);
   }
 
   componentWillUnmount() {
@@ -139,6 +203,10 @@ class ManualConnection extends Component {
   }
   onConnected() {
     this.setState({ connected: true });
+    // setInterval(() => {
+    //   let byte = Math.round(255*Math.random());
+    //   ParseDroneStatByte(byte, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
+    // }, 2000);
   }
   onDisconnected() {
     this.setState({ connected: false });

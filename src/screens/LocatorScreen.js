@@ -383,7 +383,7 @@ function LocatorScreen({ navigation, route }) {
               
               //sendTargetInfo(); <-- do this on homescreen. use setinterval with 10Hz 
 
-              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing)})
+              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing), sendTargetMsg:1})
             } catch(e){
               
             } finally{
