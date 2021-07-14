@@ -82,7 +82,13 @@ class ManualConnection extends Component {
       this.setDrone1({...this.drone1, sendTargetMsg:0});
       // setTimeout(() => { this.setDrone1({...this.drone1, sendTargetMsg:0}); }, 5000);
     }
-    
+    if (this.drone1.sendFireMsg == 1)
+    {
+      let byte = Math.round(255*Math.random());
+      ParseDroneStatByte(byte, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
+      this.setDrone1({...this.drone1, sendFireMsg:0});
+      // setTimeout(() => { this.setDrone1({...this.drone1, sendTargetMsg:0}); }, 5000);
+    }
   }
 
   componentDidMount() {

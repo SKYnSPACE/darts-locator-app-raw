@@ -42,7 +42,7 @@ function SuspendedMessage() {
   alert("Fire suspended due to timeout.");
 }
 
-function FireScreen({ navigation }) {
+function FireScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
         <View style={styles.disclaimerBox}>
@@ -54,7 +54,15 @@ function FireScreen({ navigation }) {
       <View style={styles.buttonBox}>
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => navigation.navigate("Status")}
+          onPress={() => {
+            try{
+              route.params?.setter({...route.params?.state, sendFireMsg:1})
+            } catch(e){
+              
+            } finally{
+              navigation.navigate("Status")
+            }}
+          }
           style={styles.fireButtonStyle}
         >
           <MaterialCommunityIcons name="upload" style={styles.fireFontStyle} />

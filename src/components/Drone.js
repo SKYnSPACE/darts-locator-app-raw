@@ -43,7 +43,7 @@ const Drone = ({state, setter, navigation}) => {
                 {distStat? <MaterialCommunityIcons name="arrow-expand" style={styles.iconStyleDark} /> : <MaterialCommunityIcons name="arrow-expand" style={styles.iconStyleDanger} />}
                 
               </View>
-              <TouchableOpacity disabled={isFired} underlayColor="white" onPress={()=>navigation.navigate('Fire')} style={styles.fireBoxStyle}>
+              <TouchableOpacity disabled={isFired} underlayColor="white" onPress={()=>navigation.navigate('Fire', {state:state, setter:setter})} style={styles.fireBoxStyle}>
                 {isFired ? <Text style={styles.fireTextStyle}> </Text> : <MaterialCommunityIcons name="upload" style={styles.fireTextStyle} />}
                 {isFired ? <Text style={styles.fireTextStyle}>- - - - -</Text> : <Text style={styles.fireTextStyle}>FIRE</Text>}
               </TouchableOpacity>
