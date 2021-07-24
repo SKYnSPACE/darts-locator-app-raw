@@ -58,7 +58,7 @@ const PackTargetInfo = (droneId, lat, latFine, lon, lonFine, testMode) => {
 
   if(testMode)
   {
-    buffer.set(IntToUint8(lat+100),3);
+    buffer.set(IntToUint8(parseInt(lat)+100),3);
   }
   else
   {
@@ -393,10 +393,7 @@ function LocatorScreen({ navigation, route }) {
             try{
               const message = onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, testMode}); //getLatLonInfo();
 
-              
-              //sendTargetInfo(); <-- do this on homescreen. use setinterval with 10Hz 
-
-              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing), targetMsg:message, sendTargetMsg:1})
+              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing), sendTargetMsg:1, targetMsg:message})
             } catch(e){
               
             } finally{

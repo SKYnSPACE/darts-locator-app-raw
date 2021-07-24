@@ -91,19 +91,146 @@ class ManualConnection extends Component {
     }
   }
 
-  sendMessage()
+  sendMessage() //TODO: Reduce State for Arbitrary # of drones (i.e. Compress drone1, drone2, ... to single drone).
   {
     if (this.drone1.sendTargetMsg == 1)
     {
       this.setDrone1({...this.drone1, sendTargetMsg:0});
-      RNSerialport.writeHexString(this.drone1.targetMsg); // 5 byte
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 0);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 100);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 200);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 300);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 400);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 500);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 600);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 700);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 800);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.targetMsg.toUpperCase()); }, 900);
+      return 0;
+    }
+    if (this.drone1.sendFireMsg == 1)
+    {
+      this.setDrone1({...this.drone1, sendFireMsg:0});
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 0);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 100);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 200);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 300);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 400);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 500);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 600);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 700);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 800);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone1.fireMsg.toUpperCase()); }, 900);
+      return 0;
+    }
+
+    if (this.drone2.sendTargetMsg == 1)
+    {
+      this.setDrone2({...this.drone2, sendTargetMsg:0});
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 0);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 100);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 200);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 300);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 400);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 500);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 600);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 700);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 800);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.targetMsg.toUpperCase()); }, 900);
+      return 0;
+    }
+    if (this.drone2.sendFireMsg == 1)
+    {
+      this.setDrone2({...this.drone2, sendFireMsg:0});
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 0);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 100);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 200);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 300);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 400);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 500);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 600);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 700);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 800);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone2.fireMsg.toUpperCase()); }, 900);
+      return 0;
+    }
+
+    if (this.drone3.sendTargetMsg == 1)
+    {
+      this.setDrone3({...this.drone3, sendTargetMsg:0});
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 0);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 100);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 200);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 300);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 400);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 500);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 600);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 700);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 800);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.targetMsg.toUpperCase()); }, 900);
+      return 0;
+    }
+    if (this.drone3.sendFireMsg == 1)
+    {
+      this.setDrone3({...this.drone3, sendFireMsg:0});
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 0);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 100);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 200);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 300);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 400);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 500);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 600);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 700);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 800);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone3.fireMsg.toUpperCase()); }, 900);
+      return 0;
+    }
+
+    if (this.drone4.sendTargetMsg == 1)
+    {
+      this.setDrone4({...this.drone4, sendTargetMsg:0});
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 0);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 100);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 200);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 300);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 400);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 500);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 600);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 700);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 800);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.targetMsg.toUpperCase()); }, 900);
+      return 0;
+    }
+    if (this.drone4.sendFireMsg == 1)
+    {
+      this.setDrone4({...this.drone4, sendFireMsg:0});
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 0);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 100);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 200);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 300);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 400);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 500);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 600);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 700);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 800);
+      setTimeout(() => { RNSerialport.writeHexString(this.drone4.fireMsg.toUpperCase()); }, 900);
+      return 0;
+    }
+  }
+
+  logMessage()
+  {
+    if (this.drone1.sendTargetMsg == 1)
+    {
+      this.setDrone1({...this.drone1, sendTargetMsg:0});
+      console.log(this.drone1.targetMsg.toUpperCase());
       // setTimeout(() => { this.setDrone1({...this.drone1, sendTargetMsg:0}); }, 5000);
       return 0;
     }
     if (this.drone1.sendFireMsg == 1)
     {
       this.setDrone1({...this.drone1, sendFireMsg:0});
-       RNSerialport.writeHexString(this.drone1.fireMsg); // 5 byte
+      console.log(this.drone1.fireMsg.toUpperCase()); // 5 byte
       // setTimeout(() => { this.setDrone1({...this.drone1, sendTargetMsg:0}); }, 5000);
       return 0;
     }
@@ -129,6 +256,7 @@ class ManualConnection extends Component {
       
     //   // RNSerialport.writeHexString("48454C4C4F");
     // }, 2000);
+    // setInterval(()=>{this.logMessage();},1000); 
   }
 
   componentDidUpdate() {  
@@ -241,7 +369,8 @@ class ManualConnection extends Component {
     this.setState({ connected: false });
   }
   onReadData(data) {
-    ParseDroneStatByte(data, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
+    let byte = parseInt('0x' + data.payload);
+    ParseDroneStatByte(byte, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
     if (
       this.state.returnedDataType === definitions.RETURNED_DATA_TYPES.INTARRAY
     ) {
@@ -251,7 +380,7 @@ class ManualConnection extends Component {
       this.state.returnedDataType === definitions.RETURNED_DATA_TYPES.HEXSTRING
     ) {
       const payload = RNSerialport.hexToUtf16(data.payload);
-      this.setState({ output: this.state.output + payload });
+      this.setState({ output: this.state.output + data.payload + '(' + parseInt(byte) + ')' + ' ' });
     }
   }
 
@@ -350,7 +479,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   body: {
-    flex: 1
+    flex: 1,
+    opacity: 0
   },
   container: {
     flex: 1,

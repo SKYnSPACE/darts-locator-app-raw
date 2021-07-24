@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- vendor-id 6790 means ch34x usb serial port -->
+<!--    <usb-device vendor-id="6790" product-id="29987" />-->
+<!--PL2303-->
+    <usb-device vendor-id="1659" product-id="8963" />
+</resources>

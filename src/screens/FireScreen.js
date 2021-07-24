@@ -43,14 +43,33 @@ function SuspendedMessage() {
 }
 
 function FireScreen({ navigation, route }) {
+
+  const droneId = route.params?.state.id;
+  const battStat = route.params?.state.battStat;
+  const imuStat = route.params?.state.imuStat;
+  const gpsStat = route.params?.state.gpsStat;
+  const targetingStat = route.params?.state.targetingStat;
+  const distStat = route.params?.state.distStat;
+
   return (
     <View style={styles.container}>
-        <View style={styles.disclaimerBox}>
-            <Text style={styles.textStyle}>LOW BATTERY</Text>
-            <Text style={styles.textStyle}>BAD GPS RECEPTION</Text>
-            <Text style={styles.textStyle}>UNKNOWN DESTINATION</Text>
-            <Text style={styles.textStyle}>DISTANCE ALERT</Text>
+      <View style={styles.disclaimerBox}>
+        <View>
+          <Text style={styles.textHeaderStyle}>WRAITH #{droneId}</Text>
         </View>
+        <View>
+          {battStat? <Text style={styles.textConfirmedStyle}>BATTERY STATUS CHECKED.</Text> : <Text style={styles.textWarningStyle}>LOW BATTERY ALERT</Text>}
+          {imuStat? <Text style={styles.textConfirmedStyle}>IMU STATUS CHECKED.</Text> : <Text style={styles.textWarningStyle}>IMU FAILURE</Text>}
+          {gpsStat? <Text style={styles.textConfirmedStyle}>GPS STATUS CHECKED.</Text> : <Text style={styles.textWarningStyle}>BAD GPS RECEPTION</Text>}
+          {targetingStat? <Text style={styles.textConfirmedStyle}>DESTINATION CHECKED.</Text> : <Text style={styles.textWarningStyle}>UNKNOWN DESTINATION</Text>}
+          {distStat? <Text style={styles.textConfirmedStyle}>FIRING DISTANCE CHECKED.</Text> : <Text style={styles.textWarningStyle}>FIRING DISTANCE ALERT</Text>}
+        </View>
+      </View>
+
+      <View style={styles.resultBox}>
+        {battStat&&imuStat&&gpsStat&&targetingStat&&distStat ? <Text style={styles.textConfirmedHeaderStyle}>[READY TO FIRE]</Text> : <Text style={styles.textWarningHeaderStyle}>[INSECURE SYSTEM]</Text>}
+      </View>
+
       <View style={styles.buttonBox}>
         <TouchableOpacity
           underlayColor="white"
@@ -115,10 +134,43 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
+  disclaimerBox:
+  {
+    flex: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
-  textStyle:{
-    fontSize: 16,
+  textHeaderStyle:{
+    fontSize: 48,
     color: 'white',
+  },
+  textConfirmedHeaderStyle:{
+    fontSize: 32,
+    color: 'skyblue',
+  },
+  textWarningHeaderStyle:{
+    fontSize: 32,
+    color: 'tomato',
+  },
+
+  textConfirmedStyle:{
+    fontSize: 18,
+    color: 'skyblue',
+  },
+
+  resultBox:
+  {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 3,
+    borderColor: "white"
+  },
+
+  textWarningStyle:{
+    fontSize: 18,
+    color: 'tomato',
   },
 
   fireButtonStyle: {
@@ -150,7 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   buttonBox: {
-    flex: 3,
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
