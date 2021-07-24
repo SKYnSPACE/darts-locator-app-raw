@@ -241,6 +241,7 @@ class ManualConnection extends Component {
     this.setState({ connected: false });
   }
   onReadData(data) {
+    ParseDroneStatByte(data, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
     if (
       this.state.returnedDataType === definitions.RETURNED_DATA_TYPES.INTARRAY
     ) {
