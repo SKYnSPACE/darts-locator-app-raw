@@ -48,14 +48,23 @@ function CreateChecksum(data){
   return checksum%256;
 }
 
-const PackTargetInfo = (droneId, lat, latFine, lon, lonFine) => {
+const PackTargetInfo = (droneId, lat, latFine, lon, lonFine, testMode) => {
   let buffer = new Uint8Array(25);
 
   buffer[0] = 255;
   buffer[1] = 250;
   
   buffer[2] = (droneId-1) << 6;
-  buffer.set(IntToUint8(lat),3);
+
+  if(testMode)
+  {
+    buffer.set(IntToUint8(lat+100),3);
+  }
+  else
+  {
+    buffer.set(IntToUint8(lat),3);
+  }
+
   buffer.set(IntToUint8(latFine.slice(0,6)),7);
   buffer.set(IntToUint8(lon),11);
   buffer.set(IntToUint8(lonFine.slice(0,6)),15);
@@ -65,6 +74,7 @@ const PackTargetInfo = (droneId, lat, latFine, lon, lonFine) => {
   buffer[24] = 221;
 
   // console.log(ToHexString(buffer))
+  return ToHexString(buffer);
 }
   
 const onPressLatLon2MGRS = ({lat, latFine, lon, lonFine, setGzd, setGsid, setEasting, setNorthing}) => {
@@ -82,7 +92,7 @@ const onPressLatLon2MGRS = ({lat, latFine, lon, lonFine, setGzd, setGsid, setEas
   }
 }
 
-const onPressMGRS2LatLon = ({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine}) => {
+const onPressMGRS2LatLon = ({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, testMode}) => {
   try{
     const mgrs = Mgrs.parse(gzd.concat(' ', gsid, ' ', easting, ' ', northing));
     const latlon = mgrs.toUtm().toLatLon()
@@ -96,7 +106,9 @@ const onPressMGRS2LatLon = ({droneId, gzd, gsid, easting, northing, setLat, setL
     setLon(lon);
     setLonFine(lonFine);
 
-    PackTargetInfo(droneId, lat, latFine, lon, lonFine);
+    const message = PackTargetInfo(droneId, lat, latFine, lon, lonFine, testMode);
+
+    return message;
 
   } catch (e){
     alert('Wrong MGRS Coordinates.');
@@ -136,6 +148,7 @@ function LocatorScreen({ navigation, route }) {
   const targetMgrs = route.params?.state.targetPos;
   const droneId = route.params?.state.id;
   // console.log(route.params?.state.targetPos)
+  const testMode = route.params?.testMode;
 
   const [lat, setLat] = useState("");
   const [latFine, setLatFine] = useState("");
@@ -259,7 +272,7 @@ function LocatorScreen({ navigation, route }) {
 
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine})}
+          onPress={() => onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, testMode})}
           style={styles.converterButton}
         >
           <MaterialCommunityIcons
@@ -378,12 +391,12 @@ function LocatorScreen({ navigation, route }) {
           underlayColor="white"
           onPress={() => {
             try{
-              onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine}); //getLatLonInfo();
+              const message = onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, testMode}); //getLatLonInfo();
 
               
               //sendTargetInfo(); <-- do this on homescreen. use setinterval with 10Hz 
 
-              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing), sendTargetMsg:1})
+              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing), targetMsg:message, sendTargetMsg:1})
             } catch(e){
               
             } finally{

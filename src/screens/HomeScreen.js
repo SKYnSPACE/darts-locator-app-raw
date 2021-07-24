@@ -21,10 +21,10 @@ const HomeScreen = ({navigation}) => {
   return (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'transparent'}}>
     {/* <Button title="네!" onPress={()=>navigation.navigate('Details')}/> */}
 
-      <Drone state={drone1} setter={setDrone1} navigation={navigation}/>
-      <Drone state={drone2} setter={setDrone2} navigation={navigation}/>
-      <Drone state={drone3} setter={setDrone3} navigation={navigation}/>
-      <Drone state={drone4} setter={setDrone4} navigation={navigation}/>
+      <Drone state={drone1} setter={setDrone1} navigation={navigation} testMode={isEnabledTest}/>
+      <Drone state={drone2} setter={setDrone2} navigation={navigation} testMode={isEnabledTest}/>
+      <Drone state={drone3} setter={setDrone3} navigation={navigation} testMode={isEnabledTest}/>
+      <Drone state={drone4} setter={setDrone4} navigation={navigation} testMode={isEnabledTest}/>
       <ManualConnection states={{drone1, drone2, drone3, drone4}} setters={{setDrone1, setDrone2, setDrone3, setDrone4}}/>
 
       <Text style={{color:'white'}}>

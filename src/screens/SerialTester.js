@@ -66,7 +66,7 @@ class ManualConnection extends Component {
     this.startUsbListener = this.startUsbListener.bind(this);
     this.stopUsbListener = this.stopUsbListener.bind(this);
   }
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) { //States in class does not update automatically. This will do the job!
     this.drone1 = nextProps.states.drone1;
     this.drone2 = nextProps.states.drone2;
     this.drone3 = nextProps.states.drone3;
@@ -91,6 +91,24 @@ class ManualConnection extends Component {
     }
   }
 
+  sendMessage()
+  {
+    if (this.drone1.sendTargetMsg == 1)
+    {
+      this.setDrone1({...this.drone1, sendTargetMsg:0});
+      RNSerialport.writeHexString(this.drone1.targetMsg); // 5 byte
+      // setTimeout(() => { this.setDrone1({...this.drone1, sendTargetMsg:0}); }, 5000);
+      return 0;
+    }
+    if (this.drone1.sendFireMsg == 1)
+    {
+      this.setDrone1({...this.drone1, sendFireMsg:0});
+       RNSerialport.writeHexString(this.drone1.fireMsg); // 5 byte
+      // setTimeout(() => { this.setDrone1({...this.drone1, sendTargetMsg:0}); }, 5000);
+      return 0;
+    }
+  }
+
   componentDidMount() {
     this.startUsbListener();
     // setInterval(() => {
@@ -99,18 +117,18 @@ class ManualConnection extends Component {
     //   console.log(this.drone2.battStat, this.drone2.imuStat, this.drone2.distStat)
     // }, 2000);
 
-    setInterval(() => {
-      // RNSerialport.writeHexString("48454C4C4F");
-      this.GenerateRandomDroneStat();
-      // this.setDrone1({...this.drone1, sendTargetMsg:0});
-      // setTimeout(() => {GenerateRandomDroneStat}, 1000);
-      // setTimeout(() => {GenerateRandomDroneStat}, 2000);
-      // setTimeout(() => {GenerateRandomDroneStat}, 3000);
-      // setTimeout(() => {GenerateRandomDroneStat}, 4000);
-      // setTimeout(() => {GenerateRandomDroneStat}, 5000);
+    // setInterval(() => {
+    //   // RNSerialport.writeHexString("48454C4C4F");
+    //   this.GenerateRandomDroneStat();
+    //   // this.setDrone1({...this.drone1, sendTargetMsg:0});
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 1000);
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 2000);
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 3000);
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 4000);
+    //   // setTimeout(() => {GenerateRandomDroneStat}, 5000);
       
-      // RNSerialport.writeHexString("48454C4C4F");
-    }, 2000);
+    //   // RNSerialport.writeHexString("48454C4C4F");
+    // }, 2000);
   }
 
   componentDidUpdate() {  
@@ -209,6 +227,11 @@ class ManualConnection extends Component {
   }
   onConnected() {
     this.setState({ connected: true });
+    // 시리얼포트 연결 확인되면, 1초마다 한번씩 상태 점검해서 메시지 전송.
+    setInterval(()=>{
+      this.sendMessage();
+    },1000); 
+
     // setInterval(() => {
     //   let byte = Math.round(255*Math.random());
     //   ParseDroneStatByte(byte, this.drone1, this.drone2, this.drone3, this.drone4, this.setDrone1, this.setDrone2, this.setDrone3, this.setDrone4);
