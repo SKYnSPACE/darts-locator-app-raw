@@ -9,10 +9,10 @@ import ManualConnection from './SerialTester'
 
 const HomeScreen = ({navigation}) => {
 
-  const [drone1, setDrone1] = useState({id:1, homePos:'NOT AVAILABLE', targetPos:'52S CF 99803 81999', isFired:0, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0, sendTargetMsg:0, targetMsg:'', sendFireMsg:0, fireMsg:'FFFB00FDFEFFDD'});
-  const [drone2, setDrone2] = useState({id:2, homePos:'NOT AVAILABLE', targetPos:'52S CE 31126 99272', isFired:0, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0, sendTargetMsg:0, targetMsg:'', sendFireMsg:0, fireMsg:'FFFB40FDFEFFDD'});
-  const [drone3, setDrone3] = useState({id:3, homePos:'NOT AVAILABLE', targetPos:'52S CF 99803 80999', isFired:0, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0, sendTargetMsg:0, targetMsg:'', sendFireMsg:0, fireMsg:'FFFB80FDFEFFDD'});
-  const [drone4, setDrone4] = useState({id:4, homePos:'NOT AVAILABLE', targetPos:'52S CF 99803 81000', isFired:0, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0, sendTargetMsg:0, targetMsg:'', sendFireMsg:0, fireMsg:'FFFBC0FDFEFFDD'}); //false state: bad
+  const [drone1, setDrone1] = useState({id:1, homePos:'NOT AVAILABLE', targetPos:'52S CF 99803 81999 30', isFired:0, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0, sendTargetMsg:0, targetMsg:'', sendFireMsg:0, fireMsg:'FFFB00FDFEFFDD', timer:''});
+  const [drone2, setDrone2] = useState({id:2, homePos:'NOT AVAILABLE', targetPos:'52S CE 31126 99272 40', isFired:0, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0, sendTargetMsg:0, targetMsg:'', sendFireMsg:0, fireMsg:'FFFB40FDFEFFDD', timer:''});
+  const [drone3, setDrone3] = useState({id:3, homePos:'NOT AVAILABLE', targetPos:'52S CF 99803 80999 50', isFired:0, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0, sendTargetMsg:0, targetMsg:'', sendFireMsg:0, fireMsg:'FFFB80FDFEFFDD', timer:''});
+  const [drone4, setDrone4] = useState({id:4, homePos:'NOT AVAILABLE', targetPos:'52S CF 99803 81000 60', isFired:0, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0, sendTargetMsg:0, targetMsg:'', sendFireMsg:0, fireMsg:'FFFBC0FDFEFFDD', timer:''}); //false state: bad
 
   const [isEnabledTest, setIsEnabledTest] = useState(false);
   const toggleTestSwitch = () => setIsEnabledTest(currentState => !currentState);

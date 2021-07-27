@@ -6,6 +6,7 @@ import {
   Button,
   TouchableOpacity,
   StyleSheet,
+  ScrollView,
   Keyboard,  TouchableWithoutFeedback
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -35,6 +36,18 @@ const IntToUint8 = function(intVal) {
     (intVal) & (255)];
 };
 
+const swap32 = function(val) {
+  return ((val & 0xFF) << 24)
+         | ((val & 0xFF00) << 8)
+         | ((val >> 8) & 0xFF00)
+         | ((val >> 24) & 0xFF);
+};
+
+const swap16 = function(val) {
+  return ((val & 0xFF) << 8)
+         | ((val >> 8) & 0xFF);
+}
+
 function ToHexString(byteArray) {
   return Array.from(byteArray, function(byte) {
     return ('0' + (byte & 0xFF).toString(16)).slice(-2);
@@ -48,7 +61,7 @@ function CreateChecksum(data){
   return checksum%256;
 }
 
-const PackTargetInfo = (droneId, lat, latFine, lon, lonFine, testMode) => {
+const PackTargetInfo = (droneId, lat, latFine, lon, lonFine, alt, testMode) => {
   let buffer = new Uint8Array(25);
 
   buffer[0] = 255;
@@ -58,17 +71,17 @@ const PackTargetInfo = (droneId, lat, latFine, lon, lonFine, testMode) => {
 
   if(testMode)
   {
-    buffer.set(IntToUint8(parseInt(lat)+100),3);
+    buffer.set(IntToUint8(swap32(parseInt(lat)+100)),3);
   }
   else
   {
-    buffer.set(IntToUint8(lat),3);
+    buffer.set(IntToUint8(swap32(lat)),3);
   }
 
-  buffer.set(IntToUint8(latFine.slice(0,6)),7);
-  buffer.set(IntToUint8(lon),11);
-  buffer.set(IntToUint8(lonFine.slice(0,6)),15);
-  buffer.set([0, 0, 0, 0], 19);
+  buffer.set(IntToUint8(swap32(latFine.slice(0,6))),7);
+  buffer.set(IntToUint8(swap32(lon)),11);
+  buffer.set(IntToUint8(swap32(lonFine.slice(0,6))),15);
+  buffer.set(IntToUint8(swap32(alt)), 19);
   
   buffer[23] = CreateChecksum(buffer.slice(2, 23));
   buffer[24] = 221;
@@ -92,7 +105,7 @@ const onPressLatLon2MGRS = ({lat, latFine, lon, lonFine, setGzd, setGsid, setEas
   }
 }
 
-const onPressMGRS2LatLon = ({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, testMode}) => {
+const onPressMGRS2LatLon = ({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, alt, testMode}) => {
   try{
     const mgrs = Mgrs.parse(gzd.concat(' ', gsid, ' ', easting, ' ', northing));
     const latlon = mgrs.toUtm().toLatLon()
@@ -106,7 +119,10 @@ const onPressMGRS2LatLon = ({droneId, gzd, gsid, easting, northing, setLat, setL
     setLon(lon);
     setLonFine(lonFine);
 
-    const message = PackTargetInfo(droneId, lat, latFine, lon, lonFine, testMode);
+    if(alt == '' || alt == 0)
+      throw new CustomError('ALT ERROR', 10000, 'Alt. cannot be 0 or none.')
+
+    const message = PackTargetInfo(droneId, lat, latFine, lon, lonFine, alt, testMode);
 
     return message;
 
@@ -115,12 +131,12 @@ const onPressMGRS2LatLon = ({droneId, gzd, gsid, easting, northing, setLat, setL
   }
 }
 
-const onPressLoad = ({targetMgrs, setLat, setLatFine, setLon, setLonFine, setGzd, setGsid, setEasting, setNorthing}) => {
+const onPressLoad = ({targetMgrs, setLat, setLatFine, setLon, setLonFine, setGzd, setGsid, setEasting, setNorthing, setAlt}) => {
   try{
     
     // console.log(route.params?.state.targetPos)
-    const mgrs = Mgrs.parse(targetMgrs);
-    const [gzd, gsid, easting, northing] = targetMgrs.split(' ')
+    // const mgrs = Mgrs.parse(targetMgrs);
+    const [gzd, gsid, easting, northing, alt] = targetMgrs.split(' ')
 
     // const latlon = mgrs.toUtm().toLatLon()
     
@@ -136,6 +152,7 @@ const onPressLoad = ({targetMgrs, setLat, setLatFine, setLon, setLonFine, setGzd
     setGsid(gsid);
     setEasting(easting);
     setNorthing(northing);
+    setAlt(alt);
 
   } catch (e){
     alert ('Nothing to Load.')
@@ -154,14 +171,18 @@ function LocatorScreen({ navigation, route }) {
   const [latFine, setLatFine] = useState("");
   const [lon, setLon] = useState("");
   const [lonFine, setLonFine] = useState("");
+
   const [gzd, setGzd] = useState("");
   const [gsid, setGsid] = useState("");
   const [easting, setEasting] = useState("");
   const [northing, setNorthing] = useState("");
 
+  const [alt, setAlt] = useState("");
+
   return (
     <View style={styles.containerStyle}>
       <View style={styles.latLonBox}>
+        <ScrollView>
         <View style={styles.titleBox}>
           <Text style={styles.latLonTitle}>Target #{droneId}: Latitude / Longitude</Text>
         </View>
@@ -169,7 +190,7 @@ function LocatorScreen({ navigation, route }) {
         <View style={styles.latBox}>
           <Text style={styles.subTitle}>Latitude: </Text>
 
-          <View style={styles.latLonInputs}>
+          <View style={styles.latLonAltInputs}>
             <TextInput
               style={{
                 width: 30,
@@ -209,7 +230,7 @@ function LocatorScreen({ navigation, route }) {
         <View style={styles.lonBox}>
           <Text style={styles.subTitle}>Longitude: </Text>
 
-          <View style={styles.latLonInputs}>
+          <View style={styles.latLonAltInputs}>
             <TextInput
               style={{
                 width: 30,
@@ -244,7 +265,34 @@ function LocatorScreen({ navigation, route }) {
           </View>
         </View>
         </DismissKeyboard>
+
+        <DismissKeyboard>
+        <View style={styles.altBox}>
+          <Text style={styles.subTitle}>Altitude: </Text>
+
+          <View style={styles.latLonAltInputs}>
+            <TextInput
+              style={{
+                width: 40,
+                height: 20,
+                color: "white",
+                borderBottomWidth: 1,
+                borderColor: "white",
+                padding: 0
+              }}
+              onChangeText={(alt) => {if(/^\d+$/.test(alt) || alt === ''){setAlt(alt)}}}
+              defaultValue={alt}
+              keyboardType="number-pad"
+              textAlign={"right"}
+              maxLength={5}
+            />
+          </View>
+
+          <Text style={styles.subTitle}> [m]</Text>
+        </View>
+        </DismissKeyboard>
         
+      </ScrollView>
       </View>
 
       <View style={styles.converterButtonBox}>
@@ -261,7 +309,7 @@ function LocatorScreen({ navigation, route }) {
 
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => onPressLoad({targetMgrs,setLat, setLatFine, setLon, setLonFine, setGzd, setGsid, setEasting, setNorthing})}
+          onPress={() => onPressLoad({targetMgrs,setLat, setLatFine, setLon, setLonFine, setGzd, setGsid, setEasting, setNorthing, setAlt})}
           style={styles.converterButton}
         >
           <MaterialCommunityIcons
@@ -272,7 +320,7 @@ function LocatorScreen({ navigation, route }) {
 
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, testMode})}
+          onPress={() => onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, alt, testMode})}
           style={styles.converterButton}
         >
           <MaterialCommunityIcons
@@ -284,6 +332,7 @@ function LocatorScreen({ navigation, route }) {
       </View>
 
       <View style={styles.mgrsBox}>
+        <ScrollView>
       <DismissKeyboard>
         <View style={styles.titleBox}>
           <Text style={styles.latLonTitle}>Target #{droneId}: MGRS</Text>
@@ -359,31 +408,58 @@ function LocatorScreen({ navigation, route }) {
         </View>
         </DismissKeyboard>
         <DismissKeyboard>
-        <View style={styles.northingBox}>
-          <Text style={styles.subTitle}>Northing: </Text>
-          
-          <View style={styles.mgrsInputs}>
-          
-            <TextInput
-              style={{
-                width: 50,
-                height: 25,
-                color: "white",
-                borderBottomWidth: 1,
-                borderColor: "white",
-                paddingVertical: 0
-              }}
-              onChangeText={(northing) => setNorthing(northing)}
-              defaultValue={northing}
-              keyboardType="number-pad"
-              textAlign={"center"}
-              maxLength={5}
-            />
+          <View style={styles.northingBox}>
+            <Text style={styles.subTitle}>Northing: </Text>
+            
+            <View style={styles.mgrsInputs}>
+            
+              <TextInput
+                style={{
+                  width: 50,
+                  height: 25,
+                  color: "white",
+                  borderBottomWidth: 1,
+                  borderColor: "white",
+                  paddingVertical: 0
+                }}
+                onChangeText={(northing) => setNorthing(northing)}
+                defaultValue={northing}
+                keyboardType="number-pad"
+                textAlign={"center"}
+                maxLength={5}
+              />
+              
+            </View>
             
           </View>
-          
+        </DismissKeyboard>
+
+        <DismissKeyboard>
+          <View style={styles.altBox}>
+            <Text style={styles.subTitle}>Altitude: </Text>
+
+            <View style={styles.mgrsInputs}>
+              <TextInput
+                style={{
+                  width: 40,
+                  height: 20,
+                  color: "white",
+                  borderBottomWidth: 1,
+                  borderColor: "white",
+                  padding: 0
+                }}
+                onChangeText={(alt) => {if(/^\d+$/.test(alt) || alt === ''){setAlt(alt)}}}
+                defaultValue={alt}
+                keyboardType="number-pad"
+                textAlign={"right"}
+                maxLength={5}
+              />
+            </View>
+          <Text style={styles.subTitle}> [m]</Text>
         </View>
         </DismissKeyboard>
+
+      </ScrollView>
       </View>
 
       <View style={styles.confirmButtonBox}>
@@ -391,9 +467,9 @@ function LocatorScreen({ navigation, route }) {
           underlayColor="white"
           onPress={() => {
             try{
-              const message = onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, testMode}); //getLatLonInfo();
+              const message = onPressMGRS2LatLon({droneId, gzd, gsid, easting, northing, setLat, setLatFine, setLon, setLonFine, alt, testMode}); //getLatLonInfo();
 
-              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing), sendTargetMsg:1, targetMsg:message})
+              route.params?.setter({...route.params?.state, targetPos: gzd.concat(' ', gsid, ' ', easting, ' ', northing, ' ', alt), sendTargetMsg:1, targetMsg:message})
             } catch(e){
               
             } finally{
@@ -445,6 +521,9 @@ const styles = StyleSheet.create({
   lonBox: {
     flexDirection: "row",
   },
+  altBox: {
+    flexDirection: "row",
+  },
   titleBox: {
     alignItems: "center",
   },
@@ -456,7 +535,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
   },
-  latLonInputs: {
+  latLonAltInputs: {
     height: 30,
     flexDirection: "row",
   },
