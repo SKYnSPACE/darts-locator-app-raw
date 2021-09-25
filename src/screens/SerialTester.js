@@ -18,16 +18,16 @@ const ParseDroneStatByte = (byte, drone1, drone2, drone3, drone4, setDrone1, set
 
   switch (droneId) {
     case 0:
-      setDrone1({...drone1, distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1)), timer:now});
+      setDrone1({...drone1, homePos:'CONNECTED', distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1)), timer:now});
       break;
     case 1:
-      setDrone2({...drone2, distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1)), timer:now});
+      setDrone2({...drone2, homePos:'CONNECTED', distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1)), timer:now});
       break;
     case 2:
-      setDrone3({...drone3, distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1)), timer:now});
+      setDrone3({...drone3, homePos:'CONNECTED', distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1)), timer:now});
       break;
     case 3:
-      setDrone4({...drone4, distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1)), timer:now});
+      setDrone4({...drone4, homePos:'CONNECTED', distStat:(byte&(32)), imuStat:(byte&(16)), gpsStat:(byte&(8)), battStat:(byte&(4)), targetingStat:(byte&(2)), isFired:(byte&(1)), timer:now});
       break;
     default:
       null;
@@ -100,19 +100,19 @@ class ManualConnection extends Component {
 
     if ((now - this.drone1.timer) > 1000)
     {
-      this.setDrone1({...this.drone1, isFired:1, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0});
+      this.setDrone1({...this.drone1, homePos:'NOT AVAILABLE', isFired:1, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0});
     }
     if ((now - this.drone2.timer) > 1000)
     {
-      this.setDrone2({...this.drone2, isFired:1, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0});
+      this.setDrone2({...this.drone2, homePos:'NOT AVAILABLE', isFired:1, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0});
     }
     if ((now - this.drone3.timer) > 1000)
     {
-      this.setDrone3({...this.drone3, isFired:1, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0});
+      this.setDrone3({...this.drone3, homePos:'NOT AVAILABLE', isFired:1, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0});
     }
     if ((now - this.drone4.timer) > 1000)
     {
-      this.setDrone4({...this.drone4, isFired:1, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0});
+      this.setDrone4({...this.drone4, homePos:'NOT AVAILABLE', isFired:1, battStat:0, imuStat:0, gpsStat:0, targetingStat:0, distStat:0});
     }
   }
 

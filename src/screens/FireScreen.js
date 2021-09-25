@@ -8,6 +8,8 @@ import {
   Animated,
   StyleSheet,
 } from "react-native";
+import { activateKeepAwake, deactivateKeepAwake } from "expo-keep-awake";
+
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -18,9 +20,9 @@ const timerProps = {
 };
 
 function ToHexString(byteArray) {
-  return Array.from(byteArray, function(byte) {
-    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-  }).join('')
+  return Array.from(byteArray, function (byte) {
+    return ("0" + (byte & 0xff).toString(16)).slice(-2);
+  }).join("");
 }
 
 const PackFireSignal = (droneId) => {
@@ -28,28 +30,29 @@ const PackFireSignal = (droneId) => {
 
   buffer[0] = 255;
   buffer[1] = 251;
-  
-  buffer[2] = (droneId-1) << 6;
+
+  buffer[2] = (droneId - 1) << 6;
   buffer[3] = 253;
   buffer[4] = 254;
   buffer[5] = 255;
   buffer[6] = 221;
-  
+
   // console.log(ToHexString(buffer))
-}
+};
 
 function SuspendedMessage() {
   alert("Fire suspended due to timeout.");
 }
 
 function FireScreen({ navigation, route }) {
-
   const droneId = route.params?.state.id;
   const battStat = route.params?.state.battStat;
   const imuStat = route.params?.state.imuStat;
   const gpsStat = route.params?.state.gpsStat;
   const targetingStat = route.params?.state.targetingStat;
   const distStat = route.params?.state.distStat;
+
+  // deactivateKeepAwake();
 
   return (
     <View style={styles.container}>
@@ -58,30 +61,57 @@ function FireScreen({ navigation, route }) {
           <Text style={styles.textHeaderStyle}>WRAITH #{droneId}</Text>
         </View>
         <View>
-          {battStat? <Text style={styles.textConfirmedStyle}>BATTERY STATUS CHECKED.</Text> : <Text style={styles.textWarningStyle}>LOW BATTERY ALERT</Text>}
-          {imuStat? <Text style={styles.textConfirmedStyle}>IMU STATUS CHECKED.</Text> : <Text style={styles.textWarningStyle}>IMU FAILURE</Text>}
-          {gpsStat? <Text style={styles.textConfirmedStyle}>GPS STATUS CHECKED.</Text> : <Text style={styles.textWarningStyle}>BAD GPS RECEPTION</Text>}
-          {targetingStat? <Text style={styles.textConfirmedStyle}>DESTINATION CHECKED.</Text> : <Text style={styles.textWarningStyle}>UNKNOWN DESTINATION</Text>}
-          {distStat? <Text style={styles.textConfirmedStyle}>FIRING DISTANCE CHECKED.</Text> : <Text style={styles.textWarningStyle}>FIRING DISTANCE ALERT</Text>}
+          {battStat ? (
+            <Text style={styles.textConfirmedStyle}>
+              BATTERY STATUS CHECKED.
+            </Text>
+          ) : (
+            <Text style={styles.textWarningStyle}>LOW BATTERY ALERT</Text>
+          )}
+          {imuStat ? (
+            <Text style={styles.textConfirmedStyle}>IMU STATUS CHECKED.</Text>
+          ) : (
+            <Text style={styles.textWarningStyle}>IMU FAILURE</Text>
+          )}
+          {gpsStat ? (
+            <Text style={styles.textConfirmedStyle}>GPS STATUS CHECKED.</Text>
+          ) : (
+            <Text style={styles.textWarningStyle}>BAD GPS RECEPTION</Text>
+          )}
+          {targetingStat ? (
+            <Text style={styles.textConfirmedStyle}>DESTINATION CHECKED.</Text>
+          ) : (
+            <Text style={styles.textWarningStyle}>UNKNOWN DESTINATION</Text>
+          )}
+          {distStat ? (
+            <Text style={styles.textConfirmedStyle}>
+              FIRING DISTANCE CHECKED.
+            </Text>
+          ) : (
+            <Text style={styles.textWarningStyle}>FIRING DISTANCE ALERT</Text>
+          )}
         </View>
       </View>
 
       <View style={styles.resultBox}>
-        {battStat&&imuStat&&gpsStat&&targetingStat&&distStat ? <Text style={styles.textConfirmedHeaderStyle}>[READY TO FIRE]</Text> : <Text style={styles.textWarningHeaderStyle}>[INSECURE SYSTEM]</Text>}
+        {battStat && imuStat && gpsStat && targetingStat && distStat ? (
+          <Text style={styles.textConfirmedHeaderStyle}>[READY TO FIRE]</Text>
+        ) : (
+          <Text style={styles.textWarningHeaderStyle}>[INSECURE SYSTEM]</Text>
+        )}
       </View>
 
       <View style={styles.buttonBox}>
         <TouchableOpacity
           underlayColor="white"
           onPress={() => {
-            try{
-              route.params?.setter({...route.params?.state, sendFireMsg:1})
-            } catch(e){
-              
-            } finally{
-              navigation.navigate("Status")
-            }}
-          }
+            try {
+              route.params?.setter({ ...route.params?.state, sendFireMsg: 1 });
+            } catch (e) {
+            } finally {
+              navigation.navigate("Status");
+            }
+          }}
           style={styles.fireButtonStyle}
         >
           <MaterialCommunityIcons name="upload" style={styles.fireFontStyle} />
@@ -90,7 +120,10 @@ function FireScreen({ navigation, route }) {
 
         <TouchableOpacity
           underlayColor="white"
-          onPress={() => navigation.navigate("Status")}
+          onPress={() => {
+            // activateKeepAwake();
+            navigation.navigate("Status");
+          }}
           style={styles.abortButtonStyle}
         >
           <CountdownCircleTimer
@@ -98,6 +131,7 @@ function FireScreen({ navigation, route }) {
             duration={10}
             colors={[["#004777", 0.33], ["#F7B801", 0.33], ["#A30000"]]}
             onComplete={() => {
+              // activateKeepAwake();
               navigation.navigate("Status");
               SuspendedMessage();
             }}
@@ -134,43 +168,41 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  disclaimerBox:
-  {
+  disclaimerBox: {
     flex: 2,
     alignItems: "center",
     justifyContent: "center",
   },
 
-  textHeaderStyle:{
+  textHeaderStyle: {
     fontSize: 48,
-    color: 'white',
+    color: "white",
   },
-  textConfirmedHeaderStyle:{
+  textConfirmedHeaderStyle: {
     fontSize: 32,
-    color: 'skyblue',
+    color: "skyblue",
   },
-  textWarningHeaderStyle:{
+  textWarningHeaderStyle: {
     fontSize: 32,
-    color: 'tomato',
+    color: "tomato",
   },
 
-  textConfirmedStyle:{
+  textConfirmedStyle: {
     fontSize: 18,
-    color: 'skyblue',
+    color: "skyblue",
   },
 
-  resultBox:
-  {
+  resultBox: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 3,
-    borderColor: "white"
+    borderColor: "white",
   },
 
-  textWarningStyle:{
+  textWarningStyle: {
     fontSize: 18,
-    color: 'tomato',
+    color: "tomato",
   },
 
   fireButtonStyle: {
@@ -221,7 +253,6 @@ const styles = StyleSheet.create({
     height: undefined,
     aspectRatio: 2,
   },
-
 });
 
 export default FireScreen;
