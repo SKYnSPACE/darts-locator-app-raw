@@ -144,8 +144,7 @@ const onPressMGRS2LatLon = ({
     setLon(lon);
     setLonFine(lonFine);
 
-    if (alt == "" || alt == 0)
-      throw new CustomError("ALT ERROR", 10000, "Alt. cannot be 0 or none.");
+    if (alt == "" || alt == 0) throw "ALT ERROR: Alt. cannot be 0 or none.";
 
     const message = PackTargetInfo(
       droneId,
@@ -160,6 +159,7 @@ const onPressMGRS2LatLon = ({
     return message;
   } catch (e) {
     alert("Wrong MGRS Coordinates.");
+    return -1;
   }
 };
 
@@ -566,6 +566,8 @@ function LocatorScreen({ navigation, route }) {
                 testMode,
               }); //getLatLonInfo();
 
+              if (message == -1) throw "Cannot Confirm!";
+
               route.params?.setter({
                 ...route.params?.state,
                 targetPos: gzd.concat(
@@ -581,9 +583,12 @@ function LocatorScreen({ navigation, route }) {
                 sendTargetMsg: 1,
                 targetMsg: message,
               });
-            } catch (e) {
-            } finally {
+
               navigation.navigate("Status");
+            } catch (e) {
+              alert(e);
+            } finally {
+              // navigation.navigate("Status");
             }
           }}
           style={styles.confirmButton}
